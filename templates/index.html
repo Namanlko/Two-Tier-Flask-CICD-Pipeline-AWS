@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Naman Pandey | Flask App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #FFF3EA;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: #FF8C42;
+            border-radius: 16px;
+            padding: 36px 32px;
+            max-width: 780px;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 2px;
+            text-align: center;
+        }
+
+        .header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #ffffff;
+            margin-bottom: 22px;
+            text-align: center;
+        }
+
+        .about {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+        }
+
+        .about h2 {
+            font-size: 1.05rem;
+            color: #FF8C42;
+            margin-bottom: 10px;
+        }
+
+        .about p {
+            font-size: 0.93rem;
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .about p:last-child {
+            margin-bottom: 0;
+        }
+
+        .messages {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            max-height: 180px;
+            overflow-y: auto;
+            min-height: 48px;
+        }
+
+        .messages p {
+            font-size: 0.92rem;
+            color: #444;
+            padding: 7px 0;
+            border-bottom: 1px solid #FFE0CC;
+        }
+
+        .messages p:last-child {
+            border-bottom: none;
+        }
+
+        .empty {
+            font-size: 0.88rem;
+            color: #bbb;
+            text-align: center;
+            padding: 8px 0;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 18px;
+            border: none;
+            border-radius: 10px;
+            background: #ffffff;
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            outline: none;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        input[type="text"]::placeholder {
+            color: #bbb;
+            text-align: center;
+        }
+
+        input[type="text"]:focus {
+            box-shadow: 0 0 0 2px #FF8C42;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            background: #FF8C42;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        input[type="submit"]:hover {
+            background: #e07030;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Naman Pandey</h1>
+            <h2>DevOps Enthusiast</h2>
+            <p>DevOps & Cloud Engineer | Automation | AI Enthusiast</p>
+        </div>
+
+        <div class="about">
+            <h2>About Me</h2>
+            <p>Hi, I'm <strong>Naman</strong> 👋, a working professional in Cloud, DevOps & AI. I love exploring new technologies!</p>
+            <p><strong>Project:</strong> I have deployed a 2-tier Flask application (Flask + MySQL) on AWS EC2 using Docker. I used Docker Compose to manage both containers with volumes and a custom network. The source code is hosted on GitHub, and Jenkins is integrated to set up a CI/CD pipeline for automated deployment.</p>
+        </div>
+
+        <div class="messages" id="messagesList">
+            {% for message in messages %}
+                <p>{{ message[0] }}</p>
+            {% else %}
+                <div class="empty" id="emptyState">No messages yet.</div>
+            {% endfor %}
+        </div>
+
+        <form id="messageForm">
+            <input type="text" name="new_message" placeholder="Type your message..." required autocomplete="off">
+            <input type="submit" value="Send">
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#messageForm").on("submit", function (e) {
+                e.preventDefault();
+                let input = $("input[name='new_message']");
+                let msg = input.val().trim();
+                if (!msg) return;
+
+                $.ajax({
+                    url: "/submit",
+                    type: "POST",
+                    data: { new_message: msg },
+                    success: function (response) {
+                        if (response && response.message) {
+                            $("#emptyState").remove();
+                            $("#messagesList").append("<p>" + response.message + "</p>");
+                            input.val("");
+                            let box = document.getElementById("messagesList");
+                            box.scrollTop = box.scrollHeight;
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
