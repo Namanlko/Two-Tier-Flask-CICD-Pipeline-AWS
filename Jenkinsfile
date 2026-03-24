@@ -11,7 +11,7 @@ pipeline{
         stage ('Code Clone'){
             steps{
                 // Clone the main branch from GitHub repository
-                git branch: 'main', url: 'https://github.com/learnwithnaman/Two-Tier-Project.git'
+                git branch: 'main', url: 'https://github.com/Namanlko/Two-Tier-Flask-CICD-Pipeline-AWS.git'
             }
         }
 
